@@ -9,19 +9,24 @@ import interpreters.CardInterpreter;
 import java.util.ArrayList;
 
 public class Player {
+    private final int frontRow;
+    private final int backRow;
+    public static final int maxManaPerRound = 10;
     private int gamesWon;
     private int gamesPlayed;
-    private int mana;
+    private int mana = 0;
     private final DecksInput decksInput;
     private HeroCard hero;
     private ArrayList<Card> deckInUsage;
 
     private ArrayList<Card> hand;
 
-    public Player(DecksInput decksInput) {
+    public Player(DecksInput decksInput, int frontRow, int backRow) {
         this.decksInput = decksInput;
         this.gamesPlayed = 0;
         this.gamesWon = 0;
+        this.frontRow = frontRow;
+        this.backRow = backRow;
     }
 
     public int getGamesWon() {
@@ -44,8 +49,18 @@ public class Player {
         return mana;
     }
 
-    public void setPlayerMana(int mana) {
-        this.mana = mana;
+    public void addPlayerMana(int round) {
+        if (round <= maxManaPerRound)
+            this.mana += round;
+        else
+            this.mana += maxManaPerRound;
+    }
+
+    public void subPlayerMana(int cost) {
+        this.mana -= cost;
+        if (this.mana < 0) {
+            this.mana = 0;
+        }
     }
 
     public DecksInput getDecksInput() {
@@ -83,5 +98,13 @@ public class Player {
     public void addInHand() {
         if (this.deckInUsage.size() > 0)
             this.hand.add(this.deckInUsage.remove(0));
+    }
+
+    public int getFrontRow() {
+        return frontRow;
+    }
+
+    public int getBackRow() {
+        return backRow;
     }
 }

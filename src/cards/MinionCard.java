@@ -5,21 +5,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 
 public class MinionCard extends Card{
+    @JsonIgnore
+    private boolean firstRow;
     private int health;
 
     private int attackDamage;
     @JsonIgnore
-    private boolean frozenStatus;
+    private boolean frozen;
     @JsonIgnore
-    private boolean tankStatus;
+    private boolean tank;
 
     public MinionCard(int mana, String description, ArrayList<String> colors, String name) {
-        super(mana, description, colors, name);
+        super(mana, description, colors, name, true);
     }
 
     public MinionCard(MinionCard minion) {
-        super(minion.getMana(), minion.getDescription(), minion.getColors(), minion.getName());
-        this.setMinionStats(minion.getHealth(), minion.getAttackDamage(), minion.frozenStatus, minion.getTankStatus());
+        super(minion.getMana(), minion.getDescription(), minion.getColors(), minion.getName(), true);
+        this.setMinionStats(minion.getHealth(), minion.getAttackDamage(), minion.isFrozen(), minion.isTank());
+        this.setFirstRow(minion.isFirstRow());
     }
 
     public int getHealth() {
@@ -38,27 +41,35 @@ public class MinionCard extends Card{
         this.attackDamage = attackDamage;
     }
 
-    public boolean getFrozenStatus() {
-        return frozenStatus;
+    public boolean isFrozen() {
+        return frozen;
     }
 
     public void setFrozen(boolean status) {
-        this.frozenStatus = status;
+        this.frozen = status;
     }
 
-    public boolean getTankStatus() {
-        return tankStatus;
+    public boolean isTank() {
+        return tank;
     }
 
-    public void setTankStatus(boolean tankStatus) {
-        this.tankStatus = tankStatus;
+    public void setTank(boolean status) {
+        this.tank = status;
     }
 
     public void setMinionStats(int health, int attackDamage, boolean frozen, boolean tank) {
         this.setHealth(health);
         this.setAttackDamage(attackDamage);
         this.setFrozen(frozen);
-        this.setTankStatus(tank);
+        this.setTank(tank);
+    }
+
+    public boolean isFirstRow() {
+        return firstRow;
+    }
+
+    public void setFirstRow(boolean status) {
+        this.firstRow = status;
     }
 
     public void useAbility() {}

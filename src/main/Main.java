@@ -2,6 +2,7 @@ package main;
 
 import cards.Card;
 import cards.HeroCard;
+import cards.MinionCard;
 import checker.Checker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,8 +82,8 @@ public final class Main {
         ArrayNode output = objectMapper.createArrayNode();
         Logger logger = new Logger(objectMapper, output);
 
-        Player playerOne = new Player(inputData.getPlayerOneDecks());
-        Player playerTwo = new Player(inputData.getPlayerTwoDecks());
+        Player playerOne = new Player(inputData.getPlayerOneDecks(), 2, 3);
+        Player playerTwo = new Player(inputData.getPlayerTwoDecks(), 1,0);
 
         ArrayList<Game> games = new ArrayList<Game>();
         for (GameInput gameInput : inputData.getGames()) {
@@ -90,6 +91,7 @@ public final class Main {
         }
 
         for (Game game : games) {
+            game.setBoard(new ArrayList<>());
             int seed = game.getGameInput().getStartGame().getShuffleSeed();
             int playerOneDeckIdx = game.getGameInput().getStartGame().getPlayerOneDeckIdx();
             int playerTwoDeckIdx = game.getGameInput().getStartGame().getPlayerTwoDeckIdx();
@@ -112,10 +114,13 @@ public final class Main {
             playerOne.getHero().initHealth();
             playerTwo.getHero().initHealth();
 
-            game.setActivePlayerIdx(game.getGameInput().getStartGame().getStartingPlayer());
+            game.setActivePlayerIdx(game.getStartingPlayerIdx());
+
+            playerOne.addPlayerMana(game.getRound());
+            playerTwo.addPlayerMana(game.getRound());
 
             for (ActionsInput action : game.getGameInput().getActions()) {
-                logger.makeAction(game, playerOne, playerTwo, action);
+                logger.addLog(game, playerOne, playerTwo, action);
             }
         }
 

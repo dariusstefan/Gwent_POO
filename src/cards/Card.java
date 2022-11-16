@@ -1,8 +1,12 @@
 package cards;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 public abstract class Card {
+    @JsonIgnore
+    private final boolean placeable;
     private final int mana;
 
     private final String description;
@@ -11,11 +15,12 @@ public abstract class Card {
 
     private final String name;
 
-    public Card(int mana, String description, ArrayList<String> colors, String name) {
+    public Card(int mana, String description, ArrayList<String> colors, String name, boolean placeable) {
         this.mana = mana;
         this.description = description;
         this.colors = colors;
         this.name = name;
+        this.placeable = placeable;
     }
 
     public int getMana() {
@@ -32,5 +37,9 @@ public abstract class Card {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isPlaceable() {
+        return placeable;
     }
 }

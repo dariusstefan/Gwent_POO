@@ -8,11 +8,9 @@ public abstract class HeroCard extends Card {
     private int health;
 
     public HeroCard(int mana, String description, ArrayList<String> colors, String name) {
-        super(mana, description, colors, name);
+        super(mana, description, colors, name, false);
     }
-    public HeroCard copyHero() {
-        return null;
-    };
+    public abstract HeroCard copyHero();
 
     public void initHealth() {
         this.health = 30;
