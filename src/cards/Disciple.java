@@ -12,4 +12,6 @@ public class Disciple extends MinionCard {
     public void useAbility() {
         System.out.println("GODSPLAN!\n");
     }
+
+
 }

@@ -1,11 +1,15 @@
 package main;
 
+import cards.Card;
 import checker.Checker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import checker.CheckerConstants;
+import entities.Game;
+import entities.Player;
+import fileio.GameInput;
 import fileio.Input;
 
 import java.io.File;
@@ -13,7 +17,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -69,7 +76,32 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
-        //TODO add here the entry point to your implementation
+        Player playerOne = new Player(inputData.getPlayerOneDecks());
+        Player playerTwo = new Player(inputData.getPlayerTwoDecks());
+
+        ArrayList<Game> games = new ArrayList<Game>();
+        for (GameInput gameInput : inputData.getGames()) {
+            games.add(new Game(gameInput));
+        }
+
+        for (Game game : games) {
+            Random rand = new Random(game.getGameInput().getStartGame().getShuffleSeed());
+            int playerOneDeckIdx = game.getGameInput().getStartGame().getPlayerOneDeckIdx();
+            int playerTwoDeckIdx = game.getGameInput().getStartGame().getPlayerTwoDeckIdx();
+
+            playerOne.setDeckInUsage(playerOneDeckIdx);
+            playerTwo.setDeckInUsage(playerTwoDeckIdx);
+
+            playerOne.resetHand();
+            playerTwo.resetHand();
+
+            Collections.shuffle(playerOne.getDeckInUsage(), rand);
+
+            playerOne.addInHand();
+            playerTwo.addInHand();
+
+            System.out.println(playerOne.getDeckInUsage());
+        }
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);

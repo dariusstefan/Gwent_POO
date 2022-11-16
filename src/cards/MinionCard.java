@@ -47,53 +47,21 @@ public class MinionCard extends Card{
         this.tankStatus = tankStatus;
     }
 
+    public void setMinionStats(int health, int attackDamage, boolean frozen, boolean tank) {
+        this.setHealth(health);
+        this.setAttackDamage(attackDamage);
+        this.setFrozen(frozen);
+        this.setTankStatus(tank);
+    }
+
     public void useAbility() {}
-}
-
-class TheRipper extends MinionCard{
-
-    public TheRipper(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
-    }
 
     @Override
-    public void useAbility() {
-        System.out.println("WEAKKNEES!\n");
+    public String toString() {
+        return "MinionCard{" +
+                "health=" + health +
+                ", name='" + getName() + '\'' +
+                '}';
     }
 }
 
-class Miraj extends MinionCard{
-
-    public Miraj(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
-    }
-
-    @Override
-    public void useAbility() {
-        System.out.println("SKYJACK!\n");
-    }
-}
-
-class TheCursedOne extends MinionCard{
-
-    public TheCursedOne(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
-    }
-
-    @Override
-    public void useAbility() {
-        System.out.println("SHAPESHIFT!\n");
-    }
-}
-
-class Disciple extends MinionCard{
-
-    public Disciple(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
-    }
-
-    @Override
-    public void useAbility() {
-        System.out.println("GODSPLAN!\n");
-    }
-}

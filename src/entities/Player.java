@@ -16,6 +16,8 @@ public class Player {
     private HeroCard hero;
     private ArrayList<Card> deckInUsage;
 
+    private ArrayList<Card> hand;
+
     public Player(DecksInput decksInput) {
         this.decksInput = decksInput;
         this.gamesPlayed = 0;
@@ -62,10 +64,23 @@ public class Player {
         return deckInUsage;
     }
 
-    public void setDeckInUsage(ArrayList<CardInput> deck) {
+    public void setDeckInUsage(int idx) {
+        ArrayList<CardInput> deck = this.getDecksInput().getDecks().get(idx);
         this.deckInUsage = new ArrayList<Card>();
         for(CardInput card : deck) {
             this.deckInUsage.add(CardInterpreter.getCardObject(card));
         }
+    }
+
+    public ArrayList<Card> getHand() {
+        return this.hand;
+    }
+
+    public void resetHand() {
+        this.hand = new ArrayList<Card>();
+    }
+
+    public void addInHand() {
+        this.hand.add(this.deckInUsage.remove(0));
     }
 }
