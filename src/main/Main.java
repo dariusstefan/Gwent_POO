@@ -89,6 +89,9 @@ public final class Main {
             int playerOneDeckIdx = game.getGameInput().getStartGame().getPlayerOneDeckIdx();
             int playerTwoDeckIdx = game.getGameInput().getStartGame().getPlayerTwoDeckIdx();
 
+            playerOne.setHero(game.getGameInput().getStartGame().getPlayerOneHero());
+            playerTwo.setHero(game.getGameInput().getStartGame().getPlayerTwoHero());
+
             playerOne.setDeckInUsage(playerOneDeckIdx);
             playerTwo.setDeckInUsage(playerTwoDeckIdx);
 
