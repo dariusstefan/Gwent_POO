@@ -1,5 +1,6 @@
 package interpreters;
 
+import cards.Card;
 import cards.MinionCard;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -81,6 +82,12 @@ public class Logger {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("x", x);
                 objectNode.put("y", y);
+                if (y >= game.getBoard().get(x).size()) {
+                    objectNode.put("error", "No card available at that position.");
+                } else {
+                    MinionCard card = new MinionCard(game.getBoard().get(x).get(y));
+                    objectNode.putPOJO("output", card);
+                }
                 output.add(objectNode);
                 break;
             case "getPlayerMana":
@@ -96,10 +103,28 @@ public class Logger {
             case "getEnvironmentCardsInHand":
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
+                if (action.getPlayerIdx() == 1) {
+                    ArrayList<Card> envCards = new ArrayList<>(playerOne.getHand());
+                    envCards.removeIf(Card::isPlaceable);
+                    objectNode.putPOJO("output", envCards);
+                } else {
+                    ArrayList<Card> envCards = new ArrayList<>(playerTwo.getHand());
+                    envCards.removeIf(Card::isPlaceable);
+                    objectNode.putPOJO("output", envCards);
+                }
                 output.add(objectNode);
                 break;
             case "getFrozenCardsOnTable":
                 objectNode.put("command", action.getCommand());
+                ArrayList<MinionCard> frozen = new ArrayList<>();
+                for (ArrayList<MinionCard> row : game.getBoard()) {
+                    for (MinionCard minion : row) {
+                        if (minion.isFrozen()) {
+                            frozen.add(minion);
+                        }
+                    }
+                }
+                objectNode.putPOJO("output", frozen);
                 output.add(objectNode);
                 break;
             case "getTotalGamesPlayed":

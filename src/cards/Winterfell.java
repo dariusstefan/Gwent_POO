@@ -9,7 +9,10 @@ public class Winterfell extends EnvironmentCard {
     }
 
     @Override
-    void useAbility() {
-        System.out.println("WINTERFELL!\n");
+    public MinionCard useAbility(ArrayList<MinionCard> minions) {
+        for(MinionCard minion : minions) {
+            minion.setFrozen(true);
+        }
+        return null;
     }
 }

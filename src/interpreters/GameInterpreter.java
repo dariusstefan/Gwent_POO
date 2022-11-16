@@ -1,6 +1,7 @@
 package interpreters;
 
 import cards.Card;
+import cards.EnvironmentCard;
 import cards.MinionCard;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -25,24 +26,12 @@ public class GameInterpreter {
     public void makeCommand(Game game, Player playerOne, Player playerTwo, ActionsInput action) {
         Coordinates attackerCoords = action.getCardAttacker();
         Coordinates targetCoords = action.getCardAttacked();
-        int affectedRow = action.getAffectedRow();
         int x = action.getX();
         int y = action.getY();
 
         switch (action.getCommand()) {
             case "endPlayerTurn":
-                if (game.getTurnOfRound() == 1) {
-                    game.newTurn();
-                    game.incTurnOfRound();
-                } else {
-                    game.newTurn();
-                    game.resetTurnOfRound();
-                    game.incRound();
-                    playerOne.addPlayerMana(game.getRound());
-                    playerTwo.addPlayerMana(game.getRound());
-                    playerOne.addInHand();
-                    playerTwo.addInHand();
-                }
+                endTurn(game, playerOne, playerTwo);
                 break;
             case "placeCard":
                 if (game.getActivePlayerIdx() == 1) {
@@ -52,6 +41,11 @@ public class GameInterpreter {
                 }
                 break;
             case "useEnvironmentCard":
+                if (game.getActivePlayerIdx() == 1) {
+                    useEnvironment(game, playerOne, action.getCommand(), action.getHandIdx(), action.getAffectedRow());
+                } else {
+                    useEnvironment(game, playerTwo, action.getCommand(), action.getHandIdx(), action.getAffectedRow());
+                }
                 break;
             case "cardUsesAttack":
                 break;
@@ -63,6 +57,87 @@ public class GameInterpreter {
                 break;
             default:
                 break;
+        }
+    }
+
+    private void endTurn(Game game, Player playerOne, Player playerTwo) {
+        if (game.getActivePlayerIdx() == 1) {
+            for (MinionCard card : game.getBoard().get(playerOne.getFrontRow())) {
+                card.setFrozen(false);
+            }
+            for (MinionCard card : game.getBoard().get(playerOne.getBackRow())) {
+                card.setFrozen(false);
+            }
+        } else {
+            for (MinionCard card : game.getBoard().get(playerTwo.getFrontRow())) {
+                card.setFrozen(false);
+            }
+            for (MinionCard card : game.getBoard().get(playerTwo.getBackRow())) {
+                card.setFrozen(false);
+            }
+        }
+        if (game.getTurnOfRound() == 1) {
+            game.newTurn();
+            game.incTurnOfRound();
+        } else {
+            game.newTurn();
+            game.resetTurnOfRound();
+            game.incRound();
+            playerOne.addPlayerMana(game.getRound());
+            playerTwo.addPlayerMana(game.getRound());
+            playerOne.addInHand();
+            playerTwo.addInHand();
+        }
+    }
+
+    private void useEnvironment(Game game, Player player, String command, int handIdx, int affectedRow) {
+        if (!player.getHand().get(handIdx).isPlaceable()) {
+            EnvironmentCard envToUse = (EnvironmentCard) player.getHand().get(handIdx);
+            if (player.getPlayerMana() >= envToUse.getMana()) {
+                if (affectedRow != player.getBackRow() && affectedRow != player.getFrontRow()) {
+                    MinionCard stolenCard = envToUse.useAbility(game.getBoard().get(affectedRow));
+                    boolean errorFlag = false;
+                    if (stolenCard != null) {
+                        if (game.getBoard().get(3 - affectedRow).size() < 5) {
+                            game.getBoard().get(3 - affectedRow).add(stolenCard);
+                            game.getBoard().get(affectedRow).remove(stolenCard);
+                        } else {
+                            errorFlag = true;
+                            ObjectNode error = mapper.createObjectNode();
+                            error.put("command", command);
+                            error.put("handIdx", handIdx);
+                            error.put("affectedRow", affectedRow);
+                            error.put("error", "Cannot steal enemy card since the player's row is full.");
+                            output.add(error);
+                        }
+                    }
+                    if (!errorFlag) {
+                        player.getHand().remove(handIdx);
+                        player.subPlayerMana(envToUse.getMana());
+                    }
+                } else {
+                    ObjectNode error = mapper.createObjectNode();
+                    error.put("command", command);
+                    error.put("handIdx", handIdx);
+                    error.put("affectedRow", affectedRow);
+                    error.put("error", "Chosen row does not belong to the enemy.");
+                    output.add(error);
+                }
+            } else {
+                ObjectNode error = mapper.createObjectNode();
+                error.put("command", command);
+                error.put("handIdx", handIdx);
+                error.put("affectedRow", affectedRow);
+                error.put("error", "Not enough mana to use environment card.");
+                output.add(error);
+            }
+        } else {
+            ObjectNode error = mapper.createObjectNode();
+            error.put("command", command);
+            error.put("handIdx", handIdx);
+            error.put("affectedRow", affectedRow);
+            error.put("error", "Chosen card is not of type environment.");
+            output.add(error);
         }
     }
 

@@ -9,7 +9,11 @@ public class Firestorm extends EnvironmentCard {
     }
 
     @Override
-    void useAbility() {
-        System.out.println("FIRESTORM!\n");
+    public MinionCard useAbility(ArrayList<MinionCard> minions) {
+        for (MinionCard minion : minions) {
+            minion.setHealth(minion.getHealth() - 1);
+        }
+        minions.removeIf(c -> c.getHealth() == 0);
+        return null;
     }
 }

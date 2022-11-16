@@ -9,7 +9,7 @@ public abstract class EnvironmentCard extends Card {
         super(mana, description, colors, name, false);
     }
 
-    abstract void useAbility();
+    public abstract MinionCard useAbility(ArrayList<MinionCard> minions);
 }
 
 

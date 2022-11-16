@@ -9,7 +9,15 @@ public class HeartHound extends EnvironmentCard {
     }
 
     @Override
-    void useAbility() {
-        System.out.println("HEARTHOUND!\n");
+    public MinionCard useAbility(ArrayList<MinionCard> minions) {
+        int maxHealth = 0;
+        MinionCard maxHealthMinion = null;
+        for (MinionCard minion : minions) {
+            if (minion.getHealth() > maxHealth) {
+                maxHealth = minion.getHealth();
+                maxHealthMinion = minion;
+            }
+        }
+        return maxHealthMinion;
     }
 }
