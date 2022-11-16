@@ -1,16 +1,20 @@
 package main;
 
 import cards.Card;
+import cards.HeroCard;
 import checker.Checker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import checker.CheckerConstants;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import entities.Game;
 import entities.Player;
+import fileio.ActionsInput;
 import fileio.GameInput;
 import fileio.Input;
+import interpreters.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,6 +79,7 @@ public final class Main {
                 Input.class);
 
         ArrayNode output = objectMapper.createArrayNode();
+        Logger logger = new Logger(objectMapper, output);
 
         Player playerOne = new Player(inputData.getPlayerOneDecks());
         Player playerTwo = new Player(inputData.getPlayerTwoDecks());
@@ -85,7 +90,7 @@ public final class Main {
         }
 
         for (Game game : games) {
-            Random rand = new Random(game.getGameInput().getStartGame().getShuffleSeed());
+            int seed = game.getGameInput().getStartGame().getShuffleSeed();
             int playerOneDeckIdx = game.getGameInput().getStartGame().getPlayerOneDeckIdx();
             int playerTwoDeckIdx = game.getGameInput().getStartGame().getPlayerTwoDeckIdx();
 
@@ -98,12 +103,20 @@ public final class Main {
             playerOne.resetHand();
             playerTwo.resetHand();
 
-            Collections.shuffle(playerOne.getDeckInUsage(), rand);
+            Collections.shuffle(playerOne.getDeckInUsage(), new Random(seed));
+            Collections.shuffle(playerTwo.getDeckInUsage(), new Random(seed));
 
             playerOne.addInHand();
             playerTwo.addInHand();
 
-            System.out.println(playerOne.getDeckInUsage());
+            playerOne.getHero().initHealth();
+            playerTwo.getHero().initHealth();
+
+            game.setActivePlayerIdx(game.getGameInput().getStartGame().getStartingPlayer());
+
+            for (ActionsInput action : game.getGameInput().getActions()) {
+                logger.makeAction(game, playerOne, playerTwo, action);
+            }
         }
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();

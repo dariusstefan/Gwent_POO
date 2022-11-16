@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Disciple extends MinionCard {
 
-    public Disciple(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
+    public Disciple(int mana, String description, ArrayList<String> colors, String name) {
+        super(mana, description, colors, name);
     }
 
     @Override

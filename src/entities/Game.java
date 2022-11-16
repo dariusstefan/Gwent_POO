@@ -14,6 +14,8 @@ public class Game {
 
     private ArrayList<ArrayList<MinionCard>> board;
 
+    private int activePlayerIdx;
+
     public GameInput getGameInput() {
         return gameInput;
     }
@@ -24,5 +26,20 @@ public class Game {
 
     public void setBoard(ArrayList<ArrayList<MinionCard>> board) {
         this.board = board;
+    }
+
+    public int getActivePlayerIdx() {
+        return activePlayerIdx;
+    }
+
+    public void setActivePlayerIdx(int activePlayerIdx) {
+        this.activePlayerIdx = activePlayerIdx;
+    }
+
+    public void newTurn() {
+        if (activePlayerIdx == 1)
+            activePlayerIdx = 2;
+        else
+            activePlayerIdx = 1;
     }
 }

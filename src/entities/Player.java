@@ -81,6 +81,7 @@ public class Player {
     }
 
     public void addInHand() {
-        this.hand.add(this.deckInUsage.remove(0));
+        if (this.deckInUsage.size() > 0)
+            this.hand.add(this.deckInUsage.remove(0));
     }
 }

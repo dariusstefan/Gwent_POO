@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class TheRipper extends MinionCard {
 
-    public TheRipper(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
+    public TheRipper(int mana, String description, ArrayList<String> colors, String name) {
+        super(mana, description, colors, name);
     }
 
     @Override

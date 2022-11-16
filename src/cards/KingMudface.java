@@ -4,8 +4,15 @@ import java.util.ArrayList;
 
 public class KingMudface extends HeroCard {
 
-    public KingMudface(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
+    public KingMudface(int mana, String description, ArrayList<String> colors, String name) {
+        super(mana, description, colors, name);
+    }
+
+    @Override
+    public HeroCard copyHero() {
+        HeroCard copy = new KingMudface(this.getMana(), this.getDescription(), this.getColors(), this.getName());
+        copy.setHealth(this.getHealth());
+        return copy;
     }
 
     @Override

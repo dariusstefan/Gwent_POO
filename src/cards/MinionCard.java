@@ -1,18 +1,25 @@
 package cards;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 public class MinionCard extends Card{
     private int health;
 
     private int attackDamage;
-
+    @JsonIgnore
     private boolean frozenStatus;
-
+    @JsonIgnore
     private boolean tankStatus;
 
-    public MinionCard(int manaCost, String description, ArrayList<String> colors, String name) {
-        super(manaCost, description, colors, name);
+    public MinionCard(int mana, String description, ArrayList<String> colors, String name) {
+        super(mana, description, colors, name);
+    }
+
+    public MinionCard(MinionCard minion) {
+        super(minion.getMana(), minion.getDescription(), minion.getColors(), minion.getName());
+        this.setMinionStats(minion.getHealth(), minion.getAttackDamage(), minion.frozenStatus, minion.getTankStatus());
     }
 
     public int getHealth() {
@@ -55,13 +62,5 @@ public class MinionCard extends Card{
     }
 
     public void useAbility() {}
-
-    @Override
-    public String toString() {
-        return "MinionCard{" +
-                "health=" + health +
-                ", name='" + getName() + '\'' +
-                '}';
-    }
 }
 
