@@ -14,7 +14,6 @@ public class Player {
     private int mana;
     private final DecksInput decksInput;
     private HeroCard hero;
-
     private ArrayList<Card> deckInUsage;
 
     public Player(DecksInput decksInput) {
@@ -55,8 +54,8 @@ public class Player {
         return hero;
     }
 
-    public void setHero(HeroCard hero) {
-        this.hero = hero;
+    public void setHero(CardInput hero) {
+        this.hero = (HeroCard) CardInterpreter.getCardObject(hero);
     }
 
     public ArrayList<Card> getDeckInUsage() {
