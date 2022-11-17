@@ -17,7 +17,7 @@ public class Player {
     private int mana = 0;
     private final DecksInput decksInput;
     private HeroCard hero;
-    private ArrayList<Card> deckInUsage;
+    private ArrayList<Card> deck;
 
     private ArrayList<Card> hand;
 
@@ -50,10 +50,7 @@ public class Player {
     }
 
     public void addPlayerMana(int round) {
-        if (round <= maxManaPerRound)
-            this.mana += round;
-        else
-            this.mana += maxManaPerRound;
+        this.mana += Math.min(round, maxManaPerRound);
     }
 
     public void subPlayerMana(int cost) {
@@ -75,15 +72,15 @@ public class Player {
         this.hero = (HeroCard) CardInterpreter.getCardObject(hero);
     }
 
-    public ArrayList<Card> getDeckInUsage() {
-        return deckInUsage;
+    public ArrayList<Card> getDeck() {
+        return deck;
     }
 
-    public void setDeckInUsage(int idx) {
+    public void setDeck(int idx) {
         ArrayList<CardInput> deck = this.getDecksInput().getDecks().get(idx);
-        this.deckInUsage = new ArrayList<Card>();
+        this.deck = new ArrayList<>();
         for(CardInput card : deck) {
-            this.deckInUsage.add(CardInterpreter.getCardObject(card));
+            this.deck.add(CardInterpreter.getCardObject(card));
         }
     }
 
@@ -92,12 +89,12 @@ public class Player {
     }
 
     public void resetHand() {
-        this.hand = new ArrayList<Card>();
+        this.hand = new ArrayList<>();
     }
 
     public void addInHand() {
-        if (this.deckInUsage.size() > 0)
-            this.hand.add(this.deckInUsage.remove(0));
+        if (this.deck.size() > 0)
+            this.hand.add(this.deck.remove(0));
     }
 
     public int getFrontRow() {
