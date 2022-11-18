@@ -82,5 +82,9 @@ public class MinionCard extends Card{
     public Card copyCard() {
         return new MinionCard(this);
     }
+
+    public void attackHero(HeroCard hero) {
+        hero.setHealth(hero.getHealth() - this.getAttackDamage());
+    }
 }
 

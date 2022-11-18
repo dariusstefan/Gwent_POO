@@ -41,6 +41,8 @@ public class Game {
         board.add(new ArrayList<>());
     }
 
+    private boolean finished = false;
+
     public int getActivePlayerIdx() {
         return activePlayerIdx;
     }
@@ -107,5 +109,13 @@ public class Game {
             }
         }
         return copy;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void finish() {
+        this.finished = true;
     }
 }

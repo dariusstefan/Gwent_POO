@@ -78,11 +78,68 @@ public class GameInterpreter {
                 }
                 break;
             case "useAttackHero":
+                if (game.getActivePlayerIdx() == 1) {
+                    attackHero(game, action.getCommand(), atkCoords, playerTwo);
+                    if (playerTwo.getHero().isDead()) {
+                        ObjectNode node = mapper.createObjectNode();
+                        node.put("gameEnded", "Player one killed the enemy hero.");
+                        output.add(node);
+                        game.finish();
+                        playerOne.incGamesWon();
+                        playerOne.incGamesPlayed();
+                        playerTwo.incGamesPlayed();
+                    }
+                } else {
+                    attackHero(game, action.getCommand(), atkCoords, playerOne);
+                    if (playerOne.getHero().isDead()) {
+                        ObjectNode node = mapper.createObjectNode();
+                        node.put("gameEnded", "Player two killed the enemy hero.");
+                        output.add(node);
+                        game.finish();
+                        playerTwo.incGamesWon();
+                        playerOne.incGamesPlayed();
+                        playerTwo.incGamesPlayed();
+                    }
+                }
                 break;
             case "useHeroAbility":
                 break;
             default:
                 break;
+        }
+    }
+
+    private void attackHero(Game game, String command, Coordinates striker, Player target) {
+        int strikerX = striker.getX();
+        int strikerY = striker.getY();
+
+        boolean errorFlag = false;
+        String errorText = null;
+
+        if (game.getAttackMask()[strikerX][strikerY] == 0) {
+            if (!game.getBoard().get(strikerX).get(strikerY).isFrozen()) {
+                MinionCard tank = getTankFromRow(game, target);
+                if (tank == null) {
+                    game.getBoard().get(strikerX).get(strikerY).attackHero(target.getHero());
+                    game.getAttackMask()[strikerX][strikerY] = 1;
+                } else {
+                    errorFlag = true;
+                    errorText = "Attacked card is not of type 'Tank'.";
+                }
+            } else {
+                errorFlag = true;
+                errorText = "Attacker card is frozen.";
+            }
+        } else {
+            errorFlag = true;
+            errorText = "Attacker card has already attacked this turn.";
+        }
+        if (errorFlag) {
+            ObjectNode error = mapper.createObjectNode();
+            error.put("command", command);
+            error.putPOJO("cardAttacker", striker);
+            error.put("error", errorText);
+            output.add(error);
         }
     }
 

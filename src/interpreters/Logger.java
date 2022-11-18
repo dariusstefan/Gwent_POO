@@ -129,17 +129,24 @@ public class Logger {
             }
             case "getTotalGamesPlayed" -> {
                 objectNode.put("command", action.getCommand());
+                objectNode.put("output", playerOne.getGamesPlayed());
                 output.add(objectNode);
             }
             case "getPlayerOneWins" -> {
                 objectNode.put("command", action.getCommand());
+                objectNode.put("output", playerOne.getGamesWon());
                 output.add(objectNode);
             }
             case "getPlayerTwoWins" -> {
                 objectNode.put("command", action.getCommand());
+                objectNode.put("output", playerTwo.getGamesWon());
                 output.add(objectNode);
             }
-            default -> interpreter.makeCommand(game, playerOne, playerTwo, action);
+            default -> {
+                if (!game.isFinished()) {
+                    interpreter.makeCommand(game, playerOne, playerTwo, action);
+                }
+            }
         }
     }
 }

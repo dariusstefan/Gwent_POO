@@ -33,16 +33,16 @@ public class Player {
         return gamesWon;
     }
 
-    public void setGamesWon(int gamesWon) {
-        this.gamesWon = gamesWon;
+    public void incGamesWon() {
+        this.gamesWon += 1;
     }
 
     public int getGamesPlayed() {
         return gamesPlayed;
     }
 
-    public void setGamesPlayed(int gamesPlayed) {
-        this.gamesPlayed = gamesPlayed;
+    public void incGamesPlayed() {
+        this.gamesPlayed += 1;
     }
 
     public int getPlayerMana() {
