@@ -9,7 +9,9 @@ public class TheCursedOne extends MinionCard {
     }
 
     @Override
-    public void useAbility() {
-        System.out.println("SHAPESHIFT!\n");
+    public void useAbility(MinionCard card) {
+        int attackDamage = card.getAttackDamage();
+        card.setAttackDamage(card.getHealth());
+        card.setHealth(attackDamage);
     }
 }

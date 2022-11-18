@@ -15,7 +15,8 @@ public abstract class Card {
 
     private final String name;
 
-    public Card(int mana, String description, ArrayList<String> colors, String name, boolean placeable) {
+    public Card(int mana, String description, ArrayList<String> colors,
+                String name, boolean placeable) {
         this.mana = mana;
         this.description = description;
         this.colors = colors;

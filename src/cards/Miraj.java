@@ -9,7 +9,9 @@ public class Miraj extends MinionCard {
     }
 
     @Override
-    public void useAbility() {
-        System.out.println("SKYJACK!\n");
+    public void useAbility(MinionCard card) {
+        int health = card.getHealth();
+        card.setHealth(this.getHealth());
+        this.setHealth(health);
     }
 }

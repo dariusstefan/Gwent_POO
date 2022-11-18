@@ -9,9 +9,7 @@ public class Disciple extends MinionCard {
     }
 
     @Override
-    public void useAbility() {
-        System.out.println("GODSPLAN!\n");
+    public void useAbility(MinionCard card) {
+        card.setHealth(card.getHealth() + 2);
     }
-
-
 }

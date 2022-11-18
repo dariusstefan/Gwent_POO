@@ -33,7 +33,7 @@ public class Logger {
         ObjectNode objectNode = mapper.createObjectNode();
 
         switch (action.getCommand()) {
-            case "getCardsInHand":
+            case "getCardsInHand" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
                 ArrayList<Card> hand = new ArrayList<>();
@@ -48,8 +48,8 @@ public class Logger {
                 }
                 objectNode.putPOJO("output", hand);
                 output.add(objectNode);
-                break;
-            case "getPlayerDeck":
+            }
+            case "getPlayerDeck" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
                 if (action.getPlayerIdx() == 1) {
@@ -58,18 +58,18 @@ public class Logger {
                     objectNode.putPOJO("output", new ArrayList<>(playerTwo.getDeckInUsage()));
                 }
                 output.add(objectNode);
-                break;
-            case "getCardsOnTable":
+            }
+            case "getCardsOnTable" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.putPOJO("output", game.copyBoard());
                 output.add(objectNode);
-                break;
-            case "getPlayerTurn":
+            }
+            case "getPlayerTurn" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("output", game.getActivePlayerIdx());
                 output.add(objectNode);
-                break;
-            case "getPlayerHero":
+            }
+            case "getPlayerHero" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
                 if (action.getPlayerIdx() == 1) {
@@ -78,8 +78,8 @@ public class Logger {
                     objectNode.putPOJO("output", playerTwo.getHero().copyHero());
                 }
                 output.add(objectNode);
-                break;
-            case "getCardAtPosition":
+            }
+            case "getCardAtPosition" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("x", x);
                 objectNode.put("y", y);
@@ -90,8 +90,8 @@ public class Logger {
                     objectNode.putPOJO("output", card);
                 }
                 output.add(objectNode);
-                break;
-            case "getPlayerMana":
+            }
+            case "getPlayerMana" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
                 if (action.getPlayerIdx() == 1) {
@@ -100,22 +100,21 @@ public class Logger {
                     objectNode.put("output", playerTwo.getPlayerMana());
                 }
                 output.add(objectNode);
-                break;
-            case "getEnvironmentCardsInHand":
+            }
+            case "getEnvironmentCardsInHand" -> {
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
+                ArrayList<Card> envCards;
                 if (action.getPlayerIdx() == 1) {
-                    ArrayList<Card> envCards = new ArrayList<>(playerOne.getHand());
-                    envCards.removeIf(Card::isPlaceable);
-                    objectNode.putPOJO("output", envCards);
+                    envCards = new ArrayList<>(playerOne.getHand());
                 } else {
-                    ArrayList<Card> envCards = new ArrayList<>(playerTwo.getHand());
-                    envCards.removeIf(Card::isPlaceable);
-                    objectNode.putPOJO("output", envCards);
+                    envCards = new ArrayList<>(playerTwo.getHand());
                 }
+                envCards.removeIf(Card::isPlaceable);
+                objectNode.putPOJO("output", envCards);
                 output.add(objectNode);
-                break;
-            case "getFrozenCardsOnTable":
+            }
+            case "getFrozenCardsOnTable" -> {
                 objectNode.put("command", action.getCommand());
                 ArrayList<MinionCard> frozen = new ArrayList<>();
                 for (ArrayList<MinionCard> row : game.getBoard()) {
@@ -127,22 +126,20 @@ public class Logger {
                 }
                 objectNode.putPOJO("output", frozen);
                 output.add(objectNode);
-                break;
-            case "getTotalGamesPlayed":
+            }
+            case "getTotalGamesPlayed" -> {
                 objectNode.put("command", action.getCommand());
                 output.add(objectNode);
-                break;
-            case "getPlayerOneWins":
+            }
+            case "getPlayerOneWins" -> {
                 objectNode.put("command", action.getCommand());
                 output.add(objectNode);
-                break;
-            case "getPlayerTwoWins":
+            }
+            case "getPlayerTwoWins" -> {
                 objectNode.put("command", action.getCommand());
                 output.add(objectNode);
-                break;
-            default:
-                interpreter.makeCommand(game, playerOne, playerTwo, action);
-                break;
+            }
+            default -> interpreter.makeCommand(game, playerOne, playerTwo, action);
         }
     }
 }

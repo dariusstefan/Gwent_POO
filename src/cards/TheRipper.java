@@ -9,7 +9,10 @@ public class TheRipper extends MinionCard {
     }
 
     @Override
-    public void useAbility() {
-        System.out.println("WEAKKNEES!\n");
+    public void useAbility(MinionCard card) {
+        card.setAttackDamage(card.getAttackDamage() - 2);
+        if (card.getAttackDamage() < 0) {
+            card.setAttackDamage(0);
+        }
     }
 }

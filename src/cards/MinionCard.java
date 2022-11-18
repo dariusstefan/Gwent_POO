@@ -72,7 +72,7 @@ public class MinionCard extends Card{
         this.firstRow = status;
     }
 
-    public void useAbility() {}
+    public void useAbility(MinionCard card) {}
 
     public void attack(MinionCard card) {
         card.setHealth(card.getHealth() - this.getAttackDamage());

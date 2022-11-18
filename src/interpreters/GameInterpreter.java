@@ -58,6 +58,24 @@ public class GameInterpreter {
                 }
                 break;
             case "cardUsesAbility":
+                String name = game.getBoard().get(atkCoords.getX()).get(atkCoords.getY()).getName();
+                if (game.getActivePlayerIdx() == 1) {
+                    if (name.equals("Disciple")) {
+                        minionAbility(game, action.getCommand(), atkCoords,
+                                tgtCoords, playerOne, true);
+                    } else {
+                        minionAbility(game, action.getCommand(), atkCoords,
+                                tgtCoords, playerTwo, false);
+                    }
+                } else {
+                    if (name.equals("Disciple")) {
+                        minionAbility(game, action.getCommand(), atkCoords,
+                                tgtCoords, playerTwo, true);
+                    } else {
+                        minionAbility(game, action.getCommand(), atkCoords,
+                                tgtCoords, playerOne, false);
+                    }
+                }
                 break;
             case "useAttackHero":
                 break;
@@ -65,6 +83,60 @@ public class GameInterpreter {
                 break;
             default:
                 break;
+        }
+    }
+
+    private void minionAbility(Game game, String command, Coordinates striker,
+                               Coordinates attacked, Player target, boolean isDisciple) {
+        int strikerX = striker.getX();
+        int strikerY = striker.getY();
+
+        boolean errorFlag = false;
+        String errorText = null;
+        if (attacked.getX() == target.getFrontRow() || attacked.getX() == target.getBackRow()) {
+            if (game.getAttackMask()[strikerX][strikerY] == 0) {
+                if (!game.getBoard().get(strikerX).get(strikerY).isFrozen()) {
+                    MinionCard card = game.getBoard().get(attacked.getX()).get(attacked.getY());
+                    if (!isDisciple) {
+                        boolean isTank = card.isTank();
+                        MinionCard tank = getTankFromRow(game, target);
+                        if (tank == null || isTank) {
+                            game.getBoard().get(strikerX).get(strikerY).useAbility(card);
+                            if (card.getHealth() <= 0) {
+                                game.getBoard().get(attacked.getX()).remove(card);
+                            }
+                            game.getAttackMask()[strikerX][strikerY] = 1;
+                        } else {
+                            errorFlag = true;
+                            errorText = "Attacked card is not of type 'Tank'.";
+                        }
+                    } else {
+                        game.getBoard().get(strikerX).get(strikerY).useAbility(card);
+                        game.getAttackMask()[strikerX][strikerY] = 1;
+                    }
+                } else {
+                    errorFlag = true;
+                    errorText = "Attacker card is frozen.";
+                }
+            } else {
+                errorFlag = true;
+                errorText = "Attacker card has already attacked this turn.";
+            }
+        } else {
+            errorFlag = true;
+            if (isDisciple) {
+                errorText = "Attacked card does not belong to the current player.";
+            } else {
+                errorText = "Attacked card does not belong to the enemy.";
+            }
+        }
+        if (errorFlag) {
+            ObjectNode error = mapper.createObjectNode();
+            error.putPOJO("cardAttacked", attacked);
+            error.putPOJO("cardAttacker", striker);
+            error.put("command", command);
+            error.put("error", errorText);
+            output.add(error);
         }
     }
 
@@ -80,14 +152,7 @@ public class GameInterpreter {
                 if (!game.getBoard().get(strikerX).get(strikerY).isFrozen()) {
                     MinionCard card = game.getBoard().get(attacked.getX()).get(attacked.getY());
                     boolean isTank = card.isTank();
-                    MinionCard tank = null;
-                    ArrayList<MinionCard> rowToCheck = game.getBoard().get(target.getFrontRow());
-                    for (MinionCard minion : rowToCheck) {
-                        if (minion.isTank()) {
-                            tank = minion;
-                            break;
-                        }
-                    }
+                    MinionCard tank = getTankFromRow(game, target);
                     if (tank == null || isTank) {
                         game.getBoard().get(strikerX).get(strikerY).attack(card);
                         if (card.getHealth() <= 0) {
@@ -118,6 +183,18 @@ public class GameInterpreter {
             error.put("error", errorText);
             output.add(error);
         }
+    }
+
+    private MinionCard getTankFromRow(Game game, Player target) {
+        MinionCard tank = null;
+        ArrayList<MinionCard> rowToCheck = game.getBoard().get(target.getFrontRow());
+        for (MinionCard minion : rowToCheck) {
+            if (minion.isTank()) {
+                tank = minion;
+                break;
+            }
+        }
+        return tank;
     }
 
     private void endTurn(Game game, Player playerOne, Player playerTwo) {
@@ -200,7 +277,6 @@ public class GameInterpreter {
             output.add(error);
         }
     }
-
     private void placeCard(Game game, Player player, String command, int handIdx) {
         if (player.getHand().get(handIdx).isPlaceable()) {
             MinionCard cardToPlace = (MinionCard) player.getHand().get(handIdx);
