@@ -36,11 +36,17 @@ public class Logger {
             case "getCardsInHand":
                 objectNode.put("command", action.getCommand());
                 objectNode.put("playerIdx", action.getPlayerIdx());
+                ArrayList<Card> hand = new ArrayList<>();
                 if (action.getPlayerIdx() == 1) {
-                    objectNode.putPOJO("output", new ArrayList<>(playerOne.getHand()));
+                    for (Card card : playerOne.getHand()) {
+                        hand.add(card.copyCard());
+                    }
                 } else {
-                    objectNode.putPOJO("output", new ArrayList<>(playerTwo.getHand()));
+                    for (Card card : playerTwo.getHand()) {
+                        hand.add(card.copyCard());
+                    }
                 }
+                objectNode.putPOJO("output", hand);
                 output.add(objectNode);
                 break;
             case "getPlayerDeck":
@@ -54,13 +60,8 @@ public class Logger {
                 output.add(objectNode);
                 break;
             case "getCardsOnTable":
-                ArrayList<ArrayList<MinionCard>> table = new ArrayList<>();
-                table.add(new ArrayList<>(game.getBoard().get(0)));
-                table.add(new ArrayList<>(game.getBoard().get(1)));
-                table.add(new ArrayList<>(game.getBoard().get(2)));
-                table.add(new ArrayList<>(game.getBoard().get(3)));
                 objectNode.put("command", action.getCommand());
-                objectNode.putPOJO("output", table);
+                objectNode.putPOJO("output", game.copyBoard());
                 output.add(objectNode);
                 break;
             case "getPlayerTurn":
@@ -83,7 +84,7 @@ public class Logger {
                 objectNode.put("x", x);
                 objectNode.put("y", y);
                 if (y >= game.getBoard().get(x).size()) {
-                    objectNode.put("error", "No card available at that position.");
+                    objectNode.put("output", "No card available at that position.");
                 } else {
                     MinionCard card = new MinionCard(game.getBoard().get(x).get(y));
                     objectNode.putPOJO("output", card);
@@ -120,7 +121,7 @@ public class Logger {
                 for (ArrayList<MinionCard> row : game.getBoard()) {
                     for (MinionCard minion : row) {
                         if (minion.isFrozen()) {
-                            frozen.add(minion);
+                            frozen.add(new MinionCard(minion));
                         }
                     }
                 }

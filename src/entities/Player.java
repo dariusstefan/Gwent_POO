@@ -50,10 +50,7 @@ public class Player {
     }
 
     public void addPlayerMana(int round) {
-        if (round <= maxManaPerRound)
-            this.mana += round;
-        else
-            this.mana += maxManaPerRound;
+        this.mana += Math.min(round, maxManaPerRound);
     }
 
     public void subPlayerMana(int cost) {
@@ -81,7 +78,7 @@ public class Player {
 
     public void setDeckInUsage(int idx) {
         ArrayList<CardInput> deck = this.getDecksInput().getDecks().get(idx);
-        this.deckInUsage = new ArrayList<Card>();
+        this.deckInUsage = new ArrayList<>();
         for(CardInput card : deck) {
             this.deckInUsage.add(CardInterpreter.getCardObject(card));
         }
@@ -92,7 +89,7 @@ public class Player {
     }
 
     public void resetHand() {
-        this.hand = new ArrayList<Card>();
+        this.hand = new ArrayList<>();
     }
 
     public void addInHand() {

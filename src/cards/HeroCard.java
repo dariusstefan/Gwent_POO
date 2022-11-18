@@ -33,4 +33,8 @@ public abstract class HeroCard extends Card {
     }
 
     abstract void useAbility();
+
+    public Card copyCard() {
+        return copyHero();
+    }
 }

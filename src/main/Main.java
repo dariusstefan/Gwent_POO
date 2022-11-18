@@ -92,6 +92,8 @@ public final class Main {
 
         for (Game game : games) {
             game.setBoard(new ArrayList<>());
+            game.resetAttackMask();
+
             int seed = game.getGameInput().getStartGame().getShuffleSeed();
             int playerOneDeckIdx = game.getGameInput().getStartGame().getPlayerOneDeckIdx();
             int playerTwoDeckIdx = game.getGameInput().getStartGame().getPlayerTwoDeckIdx();

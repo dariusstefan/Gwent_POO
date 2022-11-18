@@ -23,6 +23,8 @@ public class Game {
 
     private int turnOfRound = 1;
 
+    private byte[][] attackMask;
+
     public GameInput getGameInput() {
         return gameInput;
     }
@@ -48,10 +50,13 @@ public class Game {
     }
 
     public void newTurn() {
-        if (activePlayerIdx == 1)
+        if (activePlayerIdx == 1) {
             activePlayerIdx = 2;
-        else
+            this.resetAttackMask();
+        } else {
             activePlayerIdx = 1;
+            this.resetAttackMask();
+        }
     }
 
     public int getRound() {
@@ -76,5 +81,31 @@ public class Game {
 
     public int getStartingPlayerIdx() {
         return startingPlayerIdx;
+    }
+
+    public byte[][] getAttackMask() {
+        return attackMask;
+    }
+
+    public void resetAttackMask() {
+        this.attackMask = new byte[][]{
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0}};
+    }
+
+    public ArrayList<ArrayList<MinionCard>> copyBoard() {
+        ArrayList<ArrayList<MinionCard>> copy = new ArrayList<>();
+        copy.add(new ArrayList<>());
+        copy.add(new ArrayList<>());
+        copy.add(new ArrayList<>());
+        copy.add(new ArrayList<>());
+        for (int i = 0; i < 4; i++) {
+            for (MinionCard minion : this.getBoard().get(i)) {
+                copy.get(i).add(new MinionCard(minion));
+            }
+        }
+        return copy;
     }
 }

@@ -20,4 +20,9 @@ public class HeartHound extends EnvironmentCard {
         }
         return maxHealthMinion;
     }
+
+    @Override
+    public EnvironmentCard copyEnvironment() {
+        return new HeartHound(getMana(), getDescription(), getColors(), getName());
+    }
 }

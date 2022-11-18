@@ -12,6 +12,7 @@ import fileio.ActionsInput;
 import fileio.Coordinates;
 
 import java.io.ObjectStreamException;
+import java.util.ArrayList;
 
 public class GameInterpreter {
     private final ObjectMapper mapper;
@@ -24,8 +25,8 @@ public class GameInterpreter {
     }
 
     public void makeCommand(Game game, Player playerOne, Player playerTwo, ActionsInput action) {
-        Coordinates attackerCoords = action.getCardAttacker();
-        Coordinates targetCoords = action.getCardAttacked();
+        Coordinates atkCoords = action.getCardAttacker();
+        Coordinates tgtCoords = action.getCardAttacked();
         int x = action.getX();
         int y = action.getY();
 
@@ -42,12 +43,19 @@ public class GameInterpreter {
                 break;
             case "useEnvironmentCard":
                 if (game.getActivePlayerIdx() == 1) {
-                    useEnvironment(game, playerOne, action.getCommand(), action.getHandIdx(), action.getAffectedRow());
+                    useEnvironment(game, playerOne, action.getCommand(), action.getHandIdx(),
+                            action.getAffectedRow());
                 } else {
-                    useEnvironment(game, playerTwo, action.getCommand(), action.getHandIdx(), action.getAffectedRow());
+                    useEnvironment(game, playerTwo, action.getCommand(), action.getHandIdx(),
+                            action.getAffectedRow());
                 }
                 break;
             case "cardUsesAttack":
+                if (game.getActivePlayerIdx() == 1) {
+                    minionAttack(game, action.getCommand(), atkCoords, tgtCoords, playerTwo);
+                } else {
+                    minionAttack(game, action.getCommand(), atkCoords, tgtCoords, playerOne);
+                }
                 break;
             case "cardUsesAbility":
                 break;
@@ -57,6 +65,58 @@ public class GameInterpreter {
                 break;
             default:
                 break;
+        }
+    }
+
+    private void minionAttack(Game game, String command, Coordinates striker,
+                              Coordinates attacked, Player target) {
+        int strikerX = striker.getX();
+        int strikerY = striker.getY();
+
+        boolean errorFlag = false;
+        String errorText = null;
+        if (attacked.getX() == target.getFrontRow() || attacked.getX() == target.getBackRow()) {
+            if (game.getAttackMask()[strikerX][strikerY] == 0) {
+                if (!game.getBoard().get(strikerX).get(strikerY).isFrozen()) {
+                    MinionCard card = game.getBoard().get(attacked.getX()).get(attacked.getY());
+                    boolean isTank = card.isTank();
+                    MinionCard tank = null;
+                    ArrayList<MinionCard> rowToCheck = game.getBoard().get(target.getFrontRow());
+                    for (MinionCard minion : rowToCheck) {
+                        if (minion.isTank()) {
+                            tank = minion;
+                            break;
+                        }
+                    }
+                    if (tank == null || isTank) {
+                        game.getBoard().get(strikerX).get(strikerY).attack(card);
+                        if (card.getHealth() <= 0) {
+                            game.getBoard().get(attacked.getX()).remove(card);
+                        }
+                        game.getAttackMask()[strikerX][strikerY] = 1;
+                    } else {
+                        errorFlag = true;
+                        errorText = "Attacked card is not of type 'Tank'.";
+                    }
+                } else {
+                    errorFlag = true;
+                    errorText = "Attacker card is frozen.";
+                }
+            } else {
+                errorFlag = true;
+                errorText = "Attacker card has already attacked this turn.";
+            }
+        } else {
+            errorFlag = true;
+            errorText = "Attacked card does not belong to the enemy.";
+        }
+        if (errorFlag) {
+            ObjectNode error = mapper.createObjectNode();
+            error.putPOJO("cardAttacked", attacked);
+            error.putPOJO("cardAttacker", striker);
+            error.put("command", command);
+            error.put("error", errorText);
+            output.add(error);
         }
     }
 
