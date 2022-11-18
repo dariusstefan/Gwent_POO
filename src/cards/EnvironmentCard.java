@@ -10,12 +10,6 @@ public abstract class EnvironmentCard extends Card {
     }
 
     public abstract MinionCard useAbility(ArrayList<MinionCard> minions);
-
-    public abstract EnvironmentCard copyEnvironment();
-
-    public Card copyCard() {
-        return copyEnvironment();
-    }
 }
 
 

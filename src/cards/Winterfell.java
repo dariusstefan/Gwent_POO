@@ -15,9 +15,4 @@ public class Winterfell extends EnvironmentCard {
         }
         return null;
     }
-
-    @Override
-    public EnvironmentCard copyEnvironment() {
-        return new Winterfell(getMana(), getDescription(), getColors(), getName());
-    }
 }

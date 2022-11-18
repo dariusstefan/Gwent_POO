@@ -73,14 +73,5 @@ public class MinionCard extends Card{
     }
 
     public void useAbility() {}
-
-    public void attack(MinionCard card) {
-        card.setHealth(card.getHealth() - this.getAttackDamage());
-    }
-
-    @Override
-    public Card copyCard() {
-        return new MinionCard(this);
-    }
 }
 

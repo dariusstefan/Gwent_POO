@@ -16,9 +16,4 @@ public class Firestorm extends EnvironmentCard {
         minions.removeIf(c -> c.getHealth() == 0);
         return null;
     }
-
-    @Override
-    public EnvironmentCard copyEnvironment() {
-        return new Firestorm(getMana(), getDescription(), getColors(), getName());
-    }
 }

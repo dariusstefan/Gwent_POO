@@ -42,6 +42,4 @@ public abstract class Card {
     public boolean isPlaceable() {
         return placeable;
     }
-
-    public abstract Card copyCard();
 }

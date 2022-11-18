@@ -92,24 +92,21 @@ public final class Main {
 
         for (Game game : games) {
             game.setBoard(new ArrayList<>());
-            game.resetAttackMask();
-
             int seed = game.getGameInput().getStartGame().getShuffleSeed();
-
             int playerOneDeckIdx = game.getGameInput().getStartGame().getPlayerOneDeckIdx();
             int playerTwoDeckIdx = game.getGameInput().getStartGame().getPlayerTwoDeckIdx();
 
             playerOne.setHero(game.getGameInput().getStartGame().getPlayerOneHero());
             playerTwo.setHero(game.getGameInput().getStartGame().getPlayerTwoHero());
 
-            playerOne.setDeck(playerOneDeckIdx);
-            playerTwo.setDeck(playerTwoDeckIdx);
+            playerOne.setDeckInUsage(playerOneDeckIdx);
+            playerTwo.setDeckInUsage(playerTwoDeckIdx);
 
             playerOne.resetHand();
             playerTwo.resetHand();
 
-            Collections.shuffle(playerOne.getDeck(), new Random(seed));
-            Collections.shuffle(playerTwo.getDeck(), new Random(seed));
+            Collections.shuffle(playerOne.getDeckInUsage(), new Random(seed));
+            Collections.shuffle(playerTwo.getDeckInUsage(), new Random(seed));
 
             playerOne.addInHand();
             playerTwo.addInHand();
