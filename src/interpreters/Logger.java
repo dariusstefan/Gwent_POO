@@ -8,11 +8,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import entities.Game;
 import entities.Player;
 import fileio.ActionsInput;
-import fileio.Coordinates;
 
 import java.util.ArrayList;
 
-public class Logger {
+final public class Logger {
     private final ObjectMapper mapper;
     private final ArrayNode output;
     private final GameInterpreter interpreter;
@@ -24,9 +23,6 @@ public class Logger {
     }
 
     public void addLog(Game game, Player playerOne, Player playerTwo, ActionsInput action) {
-        Coordinates attackerCoords = action.getCardAttacker();
-        Coordinates targetCoords = action.getCardAttacked();
-        int affectedRow = action.getAffectedRow();
         int x = action.getX();
         int y = action.getY();
 

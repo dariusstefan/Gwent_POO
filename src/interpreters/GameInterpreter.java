@@ -1,6 +1,5 @@
 package interpreters;
 
-import cards.Card;
 import cards.EnvironmentCard;
 import cards.MinionCard;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,10 +10,9 @@ import entities.Player;
 import fileio.ActionsInput;
 import fileio.Coordinates;
 
-import java.io.ObjectStreamException;
 import java.util.ArrayList;
 
-public class GameInterpreter {
+final public class GameInterpreter {
     private final ObjectMapper mapper;
 
     private final ArrayNode output;
@@ -27,8 +25,6 @@ public class GameInterpreter {
     public void makeCommand(Game game, Player playerOne, Player playerTwo, ActionsInput action) {
         Coordinates atkCoords = action.getCardAttacker();
         Coordinates tgtCoords = action.getCardAttacked();
-        int x = action.getX();
-        int y = action.getY();
 
         switch (action.getCommand()) {
             case "endPlayerTurn":
@@ -103,9 +99,60 @@ public class GameInterpreter {
                 }
                 break;
             case "useHeroAbility":
+                if (game.getActivePlayerIdx() == 1) {
+                    useHeroAbility(game, playerOne, action.getCommand(),
+                            action.getAffectedRow());
+                } else {
+                    useHeroAbility(game, playerTwo, action.getCommand(),
+                            action.getAffectedRow());
+                }
                 break;
             default:
                 break;
+        }
+    }
+
+    private void useHeroAbility(Game game, Player player, String command, int affectedRow) {
+
+        boolean isAttack = player.getHero().getName().equals("Lord Royce") ||
+                player.getHero().getName().equals("Empress Thorina");
+        boolean errorFlag = false;
+        String errorText = null;
+        if (player.getPlayerMana() >= player.getHero().getMana()) {
+            if (player.getHeroAttacked() == 0) {
+                if (affectedRow == player.getBackRow() || affectedRow == player.getFrontRow()) {
+                    if (isAttack) {
+                        errorFlag = true;
+                        errorText = "Selected row does not belong to the enemy.";
+                    } else {
+                        player.getHero().useAbility(game.getBoard().get(affectedRow));
+                        player.subPlayerMana(player.getHero().getMana());
+                        player.setHeroAttacked();
+                    }
+                } else {
+                    if (isAttack) {
+                        player.getHero().useAbility(game.getBoard().get(affectedRow));
+                        player.subPlayerMana(player.getHero().getMana());
+                        player.setHeroAttacked();
+                    } else {
+                        errorFlag = true;
+                        errorText = "Selected row does not belong to the current player.";
+                    }
+                }
+            } else {
+                errorFlag = true;
+                errorText = "Hero has already attacked this turn.";
+            }
+        } else {
+            errorFlag = true;
+            errorText = "Not enough mana to use hero's ability.";
+        }
+        if (errorFlag) {
+            ObjectNode error = mapper.createObjectNode();
+            error.put("command", command);
+            error.put("affectedRow", affectedRow);
+            error.put("error", errorText);
+            output.add(error);
         }
     }
 
@@ -281,6 +328,8 @@ public class GameInterpreter {
             playerTwo.addPlayerMana(game.getRound());
             playerOne.addInHand();
             playerTwo.addInHand();
+            playerOne.resetHeroAttacked();
+            playerTwo.resetHeroAttacked();
         }
     }
 

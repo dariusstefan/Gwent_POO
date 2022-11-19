@@ -2,7 +2,7 @@ package cards;
 
 import java.util.ArrayList;
 
-public class LordRoyce extends HeroCard {
+final public class LordRoyce extends HeroCard {
 
     public LordRoyce(int mana, String description, ArrayList<String> colors, String name) {
         super(mana, description, colors, name);
@@ -16,7 +16,16 @@ public class LordRoyce extends HeroCard {
     }
 
     @Override
-    void useAbility() {
-        System.out.println("SUBZERO!\n");
+    public void useAbility(ArrayList<MinionCard> cards) {
+        MinionCard highestAttack = null;
+        int maxAttack = 0;
+        for (MinionCard card : cards) {
+            if (card.getAttackDamage() > maxAttack) {
+                maxAttack = card.getAttackDamage();
+                highestAttack = card;
+            }
+        }
+        if (highestAttack != null)
+            highestAttack.setFrozen(true);
     }
 }

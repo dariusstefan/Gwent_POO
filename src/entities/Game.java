@@ -5,7 +5,7 @@ import fileio.GameInput;
 
 import java.util.ArrayList;
 
-public class Game {
+final public class Game {
     private final GameInput gameInput;
 
     public Game(GameInput gameInput) {

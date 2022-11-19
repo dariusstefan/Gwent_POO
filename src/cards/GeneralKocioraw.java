@@ -2,7 +2,7 @@ package cards;
 
 import java.util.ArrayList;
 
-public class GeneralKocioraw extends HeroCard {
+final public class GeneralKocioraw extends HeroCard {
 
     public GeneralKocioraw(int mana, String description, ArrayList<String> colors, String name) {
         super(mana, description, colors, name);
@@ -16,7 +16,9 @@ public class GeneralKocioraw extends HeroCard {
     }
 
     @Override
-    void useAbility() {
-        System.out.println("BLOODTHIRST!\n");
+    public void useAbility(ArrayList<MinionCard> cards) {
+        for (MinionCard card : cards) {
+            card.setAttackDamage(card.getAttackDamage() + 1);
+        }
     }
 }

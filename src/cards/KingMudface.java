@@ -2,7 +2,7 @@ package cards;
 
 import java.util.ArrayList;
 
-public class KingMudface extends HeroCard {
+final public class KingMudface extends HeroCard {
 
     public KingMudface(int mana, String description, ArrayList<String> colors, String name) {
         super(mana, description, colors, name);
@@ -16,7 +16,9 @@ public class KingMudface extends HeroCard {
     }
 
     @Override
-    void useAbility() {
-        System.out.println("EARTHBORN!\n");
+    public void useAbility(ArrayList<MinionCard> cards) {
+        for (MinionCard card : cards) {
+            card.setHealth(card.getHealth() + 1);
+        }
     }
 }

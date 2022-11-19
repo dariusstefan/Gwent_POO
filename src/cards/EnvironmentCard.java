@@ -1,7 +1,5 @@
 package cards;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 
 public abstract class EnvironmentCard extends Card {

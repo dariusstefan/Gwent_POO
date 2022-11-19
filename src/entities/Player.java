@@ -8,7 +8,7 @@ import interpreters.CardInterpreter;
 
 import java.util.ArrayList;
 
-public class Player {
+final public class Player {
     private final int frontRow;
     private final int backRow;
     public static final int maxManaPerRound = 10;
@@ -20,6 +20,8 @@ public class Player {
     private ArrayList<Card> deckInUsage;
 
     private ArrayList<Card> hand;
+
+    private byte heroAttacked;
 
     public Player(DecksInput decksInput, int frontRow, int backRow) {
         this.decksInput = decksInput;
@@ -58,6 +60,10 @@ public class Player {
         if (this.mana < 0) {
             this.mana = 0;
         }
+    }
+
+    public void resetPlayerMana() {
+        this.subPlayerMana(this.getPlayerMana());
     }
 
     public DecksInput getDecksInput() {
@@ -103,5 +109,17 @@ public class Player {
 
     public int getBackRow() {
         return backRow;
+    }
+
+    public byte getHeroAttacked() {
+        return heroAttacked;
+    }
+
+    public void resetHeroAttacked() {
+        this.heroAttacked = 0;
+    }
+
+    public void  setHeroAttacked() {
+        this.heroAttacked = 1;
     }
 }

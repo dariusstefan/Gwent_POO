@@ -1,15 +1,11 @@
 package main;
 
-import cards.Card;
-import cards.HeroCard;
-import cards.MinionCard;
 import checker.Checker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import checker.CheckerConstants;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import entities.Game;
 import entities.Player;
 import fileio.ActionsInput;
@@ -85,7 +81,7 @@ public final class Main {
         Player playerOne = new Player(inputData.getPlayerOneDecks(), 2, 3);
         Player playerTwo = new Player(inputData.getPlayerTwoDecks(), 1,0);
 
-        ArrayList<Game> games = new ArrayList<Game>();
+        ArrayList<Game> games = new ArrayList<>();
         for (GameInput gameInput : inputData.getGames()) {
             games.add(new Game(gameInput));
         }
@@ -117,6 +113,9 @@ public final class Main {
             playerTwo.getHero().initHealth();
 
             game.setActivePlayerIdx(game.getStartingPlayerIdx());
+
+            playerOne.resetPlayerMana();
+            playerTwo.resetPlayerMana();
 
             playerOne.addPlayerMana(game.getRound());
             playerTwo.addPlayerMana(game.getRound());

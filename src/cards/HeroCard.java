@@ -32,7 +32,7 @@ public abstract class HeroCard extends Card {
         return this.health == 0;
     }
 
-    abstract void useAbility();
+    abstract public void useAbility(ArrayList<MinionCard> minions);
 
     public Card copyCard() {
         return copyHero();

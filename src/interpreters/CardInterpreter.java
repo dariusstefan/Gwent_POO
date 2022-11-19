@@ -5,7 +5,7 @@ import fileio.CardInput;
 
 import java.util.ArrayList;
 
-public class CardInterpreter {
+final public class CardInterpreter {
     static public Card getCardObject(CardInput card) {
         String name = card.getName();
         int mana = card.getMana();
@@ -79,7 +79,7 @@ public class CardInterpreter {
                 return new GeneralKocioraw(mana, description, colors, name);
 
             case "Empress Thorina":
-                return new EmpressaThorina(mana, description, colors, name);
+                return new EmpressThorina(mana, description, colors, name);
 
             case "King Mudface":
                 return new KingMudface(mana, description, colors, name);
