@@ -1,5 +1,6 @@
 package cards;
 
+import checker.CheckerConstants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
@@ -7,20 +8,26 @@ import java.util.ArrayList;
 public abstract class HeroCard extends Card {
     private int health;
 
-    public HeroCard(int mana, String description, ArrayList<String> colors, String name) {
+    public HeroCard(final int mana, final String description,
+                    final ArrayList<String> colors, final String name) {
         super(mana, description, colors, name, false);
     }
+
+    /**Returns a deep-copied object of class HeroCard.*/
     public abstract HeroCard copyHero();
 
-    public void initHealth() {
-        this.health = 30;
+    /**This method initialize health for an object of class HeroCard.*/
+    public final void initHealth() {
+        this.health = CheckerConstants.INITIAL_HEALTH_HERO;
     }
 
-    public int getHealth() {
+    /**This method returns health for an object of class HeroCard.*/
+    public final int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    /**This method sets health for an object of class HeroCard.*/
+    public final void setHealth(final int health) {
         this.health = health;
         if (this.health < 0) {
             this.health = 0;
@@ -28,12 +35,14 @@ public abstract class HeroCard extends Card {
     }
 
     @JsonIgnore
-    public boolean isDead() {
+    public final boolean isDead() {
         return this.health == 0;
     }
 
-    abstract public void useAbility(ArrayList<MinionCard> minions);
+    /**This method should implement ability of a hero card.*/
+    public abstract void useAbility(ArrayList<MinionCard> minions);
 
+    /**This method implements copyCard abstract of parent class Card.*/
     public Card copyCard() {
         return copyHero();
     }

@@ -2,14 +2,15 @@ package cards;
 
 import java.util.ArrayList;
 
-final public class HeartHound extends EnvironmentCard {
+public final class HeartHound extends EnvironmentCard {
 
-    public HeartHound(int mana, String description, ArrayList<String> colors, String name) {
+    public HeartHound(final int mana, final String description,
+                      final ArrayList<String> colors, final String name) {
         super(mana, description, colors, name);
     }
 
     @Override
-    public MinionCard useAbility(ArrayList<MinionCard> minions) {
+    public MinionCard useAbility(final ArrayList<MinionCard> minions) {
         int maxHealth = 0;
         MinionCard maxHealthMinion = null;
         for (MinionCard minion : minions) {

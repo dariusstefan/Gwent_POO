@@ -2,14 +2,15 @@ package cards;
 
 import java.util.ArrayList;
 
-final public class Firestorm extends EnvironmentCard {
+public final class Firestorm extends EnvironmentCard {
 
-    public Firestorm(int mana, String description, ArrayList<String> colors, String name) {
+    public Firestorm(final int mana, final String description,
+                     final ArrayList<String> colors, final String name) {
         super(mana, description, colors, name);
     }
 
     @Override
-    public MinionCard useAbility(ArrayList<MinionCard> minions) {
+    public MinionCard useAbility(final ArrayList<MinionCard> minions) {
         for (MinionCard minion : minions) {
             minion.setHealth(minion.getHealth() - 1);
         }

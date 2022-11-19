@@ -11,18 +11,21 @@ import fileio.ActionsInput;
 
 import java.util.ArrayList;
 
-final public class Logger {
+public final class Logger {
     private final ObjectMapper mapper;
     private final ArrayNode output;
     private final GameInterpreter interpreter;
 
-    public Logger(ObjectMapper mapper, ArrayNode output) {
+    public Logger(final ObjectMapper mapper, final ArrayNode output) {
         this.mapper = mapper;
         this.output = output;
         this.interpreter = new GameInterpreter(mapper, output);
     }
 
-    public void addLog(Game game, Player playerOne, Player playerTwo, ActionsInput action) {
+    /**This method adds debug lines to the output.
+     * If command is not for debug, the game-commands interpreter is called.*/
+    public void addLog(final Game game, final Player playerOne,
+                       final Player playerTwo, final ActionsInput action) {
         int x = action.getX();
         int y = action.getY();
 

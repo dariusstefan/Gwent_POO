@@ -1,14 +1,14 @@
 package entities;
 
 import cards.MinionCard;
+import checker.CheckerConstants;
 import fileio.GameInput;
 
 import java.util.ArrayList;
-
-final public class Game {
+ public final class Game {
     private final GameInput gameInput;
 
-    public Game(GameInput gameInput) {
+    public Game(final GameInput gameInput) {
         this.gameInput = gameInput;
         this.startingPlayerIdx = gameInput.getStartGame().getStartingPlayer();
     }
@@ -33,8 +33,9 @@ final public class Game {
         return board;
     }
 
-    public void setBoard(ArrayList<ArrayList<MinionCard>> board) {
-        this.board = board;
+    /**This method sets the board for a new game.*/
+    public void setBoard() {
+        this.board = new ArrayList<>();
         board.add(new ArrayList<>());
         board.add(new ArrayList<>());
         board.add(new ArrayList<>());
@@ -47,10 +48,14 @@ final public class Game {
         return activePlayerIdx;
     }
 
-    public void setActivePlayerIdx(int activePlayerIdx) {
+    public void setActivePlayerIdx(final int activePlayerIdx) {
         this.activePlayerIdx = activePlayerIdx;
     }
 
+    /**This method changes the active player of a game.
+     * Each game round has 2 turns, one for each player.
+     * This method also reset the attackMask which is a matrix of bytes that should tell
+     * if a card on board attacked that turn or not. Each byte of the matrix represents a card.*/
     public void newTurn() {
         if (activePlayerIdx == 1) {
             activePlayerIdx = 2;
@@ -65,6 +70,7 @@ final public class Game {
         return round;
     }
 
+    /**This method increments the current number of rounds.*/
     public void incRound() {
         this.round += 1;
     }
@@ -73,10 +79,12 @@ final public class Game {
         return turnOfRound;
     }
 
+    /**This method increments the current turn of a round.*/
     public void incTurnOfRound() {
         this.turnOfRound += 1;
     }
 
+    /**This method resets turn for each round to 1.*/
     public void resetTurnOfRound() {
         this.turnOfRound = 1;
     }
@@ -85,10 +93,13 @@ final public class Game {
         return startingPlayerIdx;
     }
 
+    /**This method returns the attackMask which is a matrix of bytes that should tell
+     * if a card on board attacked that turn or not. Each byte of the matrix represents a card.*/
     public byte[][] getAttackMask() {
         return attackMask;
     }
 
+    /**This method resets the attackMask for each turn.*/
     public void resetAttackMask() {
         this.attackMask = new byte[][]{
                 {0, 0, 0, 0, 0},
@@ -97,13 +108,14 @@ final public class Game {
                 {0, 0, 0, 0, 0}};
     }
 
+    /**This method returns a deep-copy of the board to be used with JSON output format.*/
     public ArrayList<ArrayList<MinionCard>> copyBoard() {
         ArrayList<ArrayList<MinionCard>> copy = new ArrayList<>();
         copy.add(new ArrayList<>());
         copy.add(new ArrayList<>());
         copy.add(new ArrayList<>());
         copy.add(new ArrayList<>());
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < CheckerConstants.BOARD_NO_ROWS; i++) {
             for (MinionCard minion : this.getBoard().get(i)) {
                 copy.get(i).add(new MinionCard(minion));
             }
@@ -115,6 +127,7 @@ final public class Game {
         return finished;
     }
 
+    /**This method finishes a game.*/
     public void finish() {
         this.finished = true;
     }

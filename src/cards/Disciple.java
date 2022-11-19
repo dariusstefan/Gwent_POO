@@ -2,14 +2,15 @@ package cards;
 
 import java.util.ArrayList;
 
-final public class Disciple extends MinionCard {
+public final class Disciple extends MinionCard {
 
-    public Disciple(int mana, String description, ArrayList<String> colors, String name) {
+    public Disciple(final int mana, final String description,
+                    final ArrayList<String> colors, final String name) {
         super(mana, description, colors, name);
     }
 
     @Override
-    public void useAbility(MinionCard card) {
+    public void useAbility(final MinionCard card) {
         card.setHealth(card.getHealth() + 2);
     }
 }

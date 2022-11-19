@@ -78,8 +78,10 @@ public final class Main {
         ArrayNode output = objectMapper.createArrayNode();
         Logger logger = new Logger(objectMapper, output);
 
-        Player playerOne = new Player(inputData.getPlayerOneDecks(), 2, 3);
-        Player playerTwo = new Player(inputData.getPlayerTwoDecks(), 1,0);
+        Player playerOne = new Player(inputData.getPlayerOneDecks(),
+                CheckerConstants.PLAYER_ONE_FRONT, CheckerConstants.PLAYER_ONE_BACK);
+        Player playerTwo = new Player(inputData.getPlayerTwoDecks(),
+                CheckerConstants.PLAYER_TWO_FRONT, CheckerConstants.PLAYER_TWO_BACK);
 
         ArrayList<Game> games = new ArrayList<>();
         for (GameInput gameInput : inputData.getGames()) {
@@ -87,7 +89,7 @@ public final class Main {
         }
 
         for (Game game : games) {
-            game.setBoard(new ArrayList<>());
+            game.setBoard();
             game.resetAttackMask();
 
             int seed = game.getGameInput().getStartGame().getShuffleSeed();

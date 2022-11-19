@@ -15,8 +15,8 @@ public abstract class Card {
 
     private final String name;
 
-    public Card(int mana, String description, ArrayList<String> colors,
-                String name, boolean placeable) {
+    public Card(final int mana, final String description, final ArrayList<String> colors,
+                final String name, final boolean placeable) {
         this.mana = mana;
         this.description = description;
         this.colors = colors;
@@ -24,25 +24,26 @@ public abstract class Card {
         this.placeable = placeable;
     }
 
-    public int getMana() {
+    public final int getMana() {
         return mana;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
-    public ArrayList<String> getColors() {
+    public final ArrayList<String> getColors() {
         return colors;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public boolean isPlaceable() {
+    public final boolean isPlaceable() {
         return placeable;
     }
 
+    /**Should return a deep-copied object of class Card.*/
     public abstract Card copyCard();
 }

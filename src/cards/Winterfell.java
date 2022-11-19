@@ -2,15 +2,16 @@ package cards;
 
 import java.util.ArrayList;
 
-final public class Winterfell extends EnvironmentCard {
+public final class Winterfell extends EnvironmentCard {
 
-    public Winterfell(int mana, String description, ArrayList<String> colors, String name) {
+    public Winterfell(final int mana, final String description,
+                      final ArrayList<String> colors, final String name) {
         super(mana, description, colors, name);
     }
 
     @Override
-    public MinionCard useAbility(ArrayList<MinionCard> minions) {
-        for(MinionCard minion : minions) {
+    public MinionCard useAbility(final ArrayList<MinionCard> minions) {
+        for (MinionCard minion : minions) {
             minion.setFrozen(true);
         }
         return null;

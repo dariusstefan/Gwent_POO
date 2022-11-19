@@ -5,8 +5,12 @@ import fileio.CardInput;
 
 import java.util.ArrayList;
 
-final public class CardInterpreter {
-    static public Card getCardObject(CardInput card) {
+public final class CardInterpreter {
+    private CardInterpreter() { }
+
+    /**This method takes a cardInput object and creates a Card object.
+     *  Card object returned is a specific type of card based on the name.*/
+    public static Card getCardObject(final CardInput card) {
         String name = card.getName();
         int mana = card.getMana();
         String description = card.getDescription();
