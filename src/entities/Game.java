@@ -1,11 +1,15 @@
 package entities;
 
 import cards.MinionCard;
-import checker.CheckerConstants;
 import fileio.GameInput;
 
 import java.util.ArrayList;
  public final class Game {
+     public static final int PLAYER_ONE_BACK = 3;
+     public static final int PLAYER_ONE_FRONT = 2;
+     public static final int PLAYER_TWO_BACK = 0;
+     public static final int PLAYER_TWO_FRONT = 1;
+     public static final int BOARD_NO_ROWS = 4;
     private final GameInput gameInput;
 
     public Game(final GameInput gameInput) {
@@ -115,7 +119,7 @@ import java.util.ArrayList;
         copy.add(new ArrayList<>());
         copy.add(new ArrayList<>());
         copy.add(new ArrayList<>());
-        for (int i = 0; i < CheckerConstants.BOARD_NO_ROWS; i++) {
+        for (int i = 0; i < BOARD_NO_ROWS; i++) {
             for (MinionCard minion : this.getBoard().get(i)) {
                 copy.get(i).add(new MinionCard(minion));
             }

@@ -1,11 +1,11 @@
 package cards;
 
-import checker.CheckerConstants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 
 public abstract class HeroCard extends Card {
+    public static final int INITIAL_HEALTH_HERO = 30;
     private int health;
 
     public HeroCard(final int mana, final String description,
@@ -18,7 +18,7 @@ public abstract class HeroCard extends Card {
 
     /**This method initialize health for an object of class HeroCard.*/
     public final void initHealth() {
-        this.health = CheckerConstants.INITIAL_HEALTH_HERO;
+        this.health = INITIAL_HEALTH_HERO;
     }
 
     /**This method returns health for an object of class HeroCard.*/

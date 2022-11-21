@@ -11,10 +11,9 @@ import fileio.ActionsInput;
 import fileio.Coordinates;
 import java.util.ArrayList;
 
-import static checker.CheckerConstants.FULL_ROW_SZ;
-import static checker.CheckerConstants.OPP_ROWS_SUM;
-
 public final class GameInterpreter {
+    public static final int OPP_ROWS_SUM = 3;
+    public static final int FULL_ROW_SZ = 5;
     private final ObjectMapper mapper;
 
     private final ArrayNode output;
