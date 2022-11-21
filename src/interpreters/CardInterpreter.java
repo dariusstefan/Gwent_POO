@@ -1,6 +1,19 @@
 package interpreters;
 
-import cards.*;
+import cards.Card;
+import cards.Disciple;
+import cards.EmpressThorina;
+import cards.Firestorm;
+import cards.GeneralKocioraw;
+import cards.HeartHound;
+import cards.KingMudface;
+import cards.LordRoyce;
+import cards.MinionCard;
+import cards.Miraj;
+import cards.TheCursedOne;
+import cards.TheRipper;
+import cards.Winterfell;
+
 import fileio.CardInput;
 
 import java.util.ArrayList;

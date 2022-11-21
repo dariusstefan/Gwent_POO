@@ -9,20 +9,25 @@ import entities.Game;
 import entities.Player;
 import fileio.ActionsInput;
 import fileio.Coordinates;
-
 import java.util.ArrayList;
 
-final public class GameInterpreter {
+import static checker.CheckerConstants.FULL_ROW_SZ;
+import static checker.CheckerConstants.OPP_ROWS_SUM;
+
+public final class GameInterpreter {
     private final ObjectMapper mapper;
 
     private final ArrayNode output;
 
-    public GameInterpreter(ObjectMapper mapper, ArrayNode output) {
+    public GameInterpreter(final ObjectMapper mapper, final ArrayNode output) {
         this.mapper = mapper;
         this.output = output;
     }
 
-    public void makeCommand(Game game, Player playerOne, Player playerTwo, ActionsInput action) {
+    /**This method interprets a command that is not for debugging.
+     * It is used to make game command, and it calls functions that implements thes commands.*/
+    public void makeCommand(final Game game, final Player playerOne,
+                            final Player playerTwo, final ActionsInput action) {
         Coordinates atkCoords = action.getCardAttacker();
         Coordinates tgtCoords = action.getCardAttacked();
 
@@ -112,10 +117,11 @@ final public class GameInterpreter {
         }
     }
 
-    private void useHeroAbility(Game game, Player player, String command, int affectedRow) {
+    private void useHeroAbility(final Game game, final Player player,
+                                final String command, final int affectedRow) {
 
-        boolean isAttack = player.getHero().getName().equals("Lord Royce") ||
-                player.getHero().getName().equals("Empress Thorina");
+        boolean isAttack = player.getHero().getName().equals("Lord Royce")
+                || player.getHero().getName().equals("Empress Thorina");
         boolean errorFlag = false;
         String errorText = null;
         if (player.getPlayerMana() >= player.getHero().getMana()) {
@@ -156,7 +162,8 @@ final public class GameInterpreter {
         }
     }
 
-    private void attackHero(Game game, String command, Coordinates striker, Player target) {
+    private void attackHero(final Game game, final String command,
+                            final Coordinates striker, final Player target) {
         int strikerX = striker.getX();
         int strikerY = striker.getY();
 
@@ -190,8 +197,9 @@ final public class GameInterpreter {
         }
     }
 
-    private void minionAbility(Game game, String command, Coordinates striker,
-                               Coordinates attacked, Player target, boolean isDisciple) {
+    private void minionAbility(final Game game, final String command, final Coordinates striker,
+                               final Coordinates attacked, final Player target,
+                               final boolean isDisciple) {
         int strikerX = striker.getX();
         int strikerY = striker.getY();
 
@@ -244,8 +252,8 @@ final public class GameInterpreter {
         }
     }
 
-    private void minionAttack(Game game, String command, Coordinates striker,
-                              Coordinates attacked, Player target) {
+    private void minionAttack(final Game game, final String command, final Coordinates striker,
+                              final Coordinates attacked, final Player target) {
         int strikerX = striker.getX();
         int strikerY = striker.getY();
 
@@ -289,7 +297,7 @@ final public class GameInterpreter {
         }
     }
 
-    private MinionCard getTankFromRow(Game game, Player target) {
+    private MinionCard getTankFromRow(final Game game, final Player target) {
         MinionCard tank = null;
         ArrayList<MinionCard> rowToCheck = game.getBoard().get(target.getFrontRow());
         for (MinionCard minion : rowToCheck) {
@@ -301,7 +309,7 @@ final public class GameInterpreter {
         return tank;
     }
 
-    private void endTurn(Game game, Player playerOne, Player playerTwo) {
+    private void endTurn(final Game game, final Player playerOne, final Player playerTwo) {
         if (game.getActivePlayerIdx() == 1) {
             for (MinionCard card : game.getBoard().get(playerOne.getFrontRow())) {
                 card.setFrozen(false);
@@ -333,25 +341,23 @@ final public class GameInterpreter {
         }
     }
 
-    private void useEnvironment(Game game, Player player, String command, int handIdx, int affectedRow) {
+    private void useEnvironment(final Game game, final Player player, final String command,
+                                final int handIdx, final int affectedRow) {
+        boolean errorFlag = false;
+        String errorText = null;
+
         if (!player.getHand().get(handIdx).isPlaceable()) {
             EnvironmentCard envToUse = (EnvironmentCard) player.getHand().get(handIdx);
             if (player.getPlayerMana() >= envToUse.getMana()) {
                 if (affectedRow != player.getBackRow() && affectedRow != player.getFrontRow()) {
                     MinionCard stolenCard = envToUse.useAbility(game.getBoard().get(affectedRow));
-                    boolean errorFlag = false;
                     if (stolenCard != null) {
-                        if (game.getBoard().get(3 - affectedRow).size() < 5) {
-                            game.getBoard().get(3 - affectedRow).add(stolenCard);
+                        if (game.getBoard().get(OPP_ROWS_SUM - affectedRow).size() < FULL_ROW_SZ) {
+                            game.getBoard().get(OPP_ROWS_SUM - affectedRow).add(stolenCard);
                             game.getBoard().get(affectedRow).remove(stolenCard);
                         } else {
                             errorFlag = true;
-                            ObjectNode error = mapper.createObjectNode();
-                            error.put("command", command);
-                            error.put("handIdx", handIdx);
-                            error.put("affectedRow", affectedRow);
-                            error.put("error", "Cannot steal enemy card since the player's row is full.");
-                            output.add(error);
+                            errorText = "Cannot steal enemy card since the player's row is full.";
                         }
                     }
                     if (!errorFlag) {
@@ -359,31 +365,31 @@ final public class GameInterpreter {
                         player.subPlayerMana(envToUse.getMana());
                     }
                 } else {
-                    ObjectNode error = mapper.createObjectNode();
-                    error.put("command", command);
-                    error.put("handIdx", handIdx);
-                    error.put("affectedRow", affectedRow);
-                    error.put("error", "Chosen row does not belong to the enemy.");
-                    output.add(error);
+                    errorFlag = true;
+                    errorText = "Chosen row does not belong to the enemy.";
                 }
             } else {
-                ObjectNode error = mapper.createObjectNode();
-                error.put("command", command);
-                error.put("handIdx", handIdx);
-                error.put("affectedRow", affectedRow);
-                error.put("error", "Not enough mana to use environment card.");
-                output.add(error);
+                errorFlag = true;
+                errorText = "Not enough mana to use environment card.";
             }
         } else {
+            errorFlag = true;
+            errorText = "Chosen card is not of type environment.";
+        }
+        if (errorFlag) {
             ObjectNode error = mapper.createObjectNode();
             error.put("command", command);
             error.put("handIdx", handIdx);
             error.put("affectedRow", affectedRow);
-            error.put("error", "Chosen card is not of type environment.");
+            error.put("error", errorText);
             output.add(error);
         }
     }
-    private void placeCard(Game game, Player player, String command, int handIdx) {
+    private void placeCard(final Game game, final Player player,
+                           final String command, final int handIdx) {
+        boolean errorFlag = false;
+        String errorText = null;
+
         if (player.getHand().get(handIdx).isPlaceable()) {
             MinionCard cardToPlace = (MinionCard) player.getHand().get(handIdx);
             if (player.getPlayerMana() >= cardToPlace.getMana()) {
@@ -393,29 +399,27 @@ final public class GameInterpreter {
                 } else {
                     row = player.getBackRow();
                 }
-                if (game.getBoard().get(row).size() < 5) {
+                if (game.getBoard().get(row).size() < FULL_ROW_SZ) {
                     game.getBoard().get(row).add(cardToPlace);
                     player.getHand().remove(handIdx);
                     player.subPlayerMana(cardToPlace.getMana());
                 } else {
-                    ObjectNode error = mapper.createObjectNode();
-                    error.put("command", command);
-                    error.put("handIdx", handIdx);
-                    error.put("error", "Cannot place card on table since row is full.");
-                    output.add(error);
+                    errorFlag = true;
+                    errorText = "Cannot place card on table since row is full.";
                 }
             } else {
-                ObjectNode error = mapper.createObjectNode();
-                error.put("command", command);
-                error.put("handIdx", handIdx);
-                error.put("error", "Not enough mana to place card on table.");
-                output.add(error);
+                errorFlag = true;
+                errorText = "Not enough mana to place card on table.";
             }
         } else {
+            errorFlag = true;
+            errorText = "Cannot place environment card on table.";
+        }
+        if (errorFlag) {
             ObjectNode error = mapper.createObjectNode();
             error.put("command", command);
             error.put("handIdx", handIdx);
-            error.put("error", "Cannot place environment card on table.");
+            error.put("error", errorText);
             output.add(error);
         }
     }

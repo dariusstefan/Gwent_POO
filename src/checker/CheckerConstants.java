@@ -38,6 +38,7 @@ public final class CheckerConstants {
     public static final int PLAYER_TWO_BACK = 0;
     public static final int PLAYER_TWO_FRONT = 1;
     public static final int INITIAL_HEALTH_HERO = 30;
-
     public static final int BOARD_NO_ROWS = 4;
+    public static final int OPP_ROWS_SUM = 3;
+    public static final int FULL_ROW_SZ = 5;
 }
