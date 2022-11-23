@@ -1,44 +1,47 @@
+#### Stefan Darius - 324CD
+# GwentStone
 
+### Packages
 
-# Tema POO  - GwentStone
+* **cards/**
+    * **Card** - abstract class which contains general information about a card
+    * **HeroCard** - abstract class which extends class Card; in addition, it has a health field and an ability method
+    * **EnvironmentCard** - abstract class which extends class Card; in addition, it has an ability method
+    * **MinionCard** - extends class Card; in addition, it has health and attack damage fields, and methods to attack another minion, to attack enemy hero and to use ability; this class also contains fields which tells if a minion is first row quality, if a minion is frozen and if a minion is a tank
+    * **EmpressThorina** - extends HeroCard class; contains an implementation for the ability method
+    * **LordRoyce** - extends HeroCard class; contains an implementation for the ability method
+    * **GeneralKocioraw** - extends HeroCard class; contains an implementation for the ability method
+    * **KingMudface** - extends HeroCard class; contains an implementation for the ability method
+    * **Firestorm** - extends EnvironmentCard class; contains an implementation for the ability method
+    * **Winterfell** - extends EnvironmentCard class; contains an implementation for the ability method
+    * **HeartHound** - extends EnvironmentCard class; contains an implementation for the ability method
+    * **Miraj** - extends MinionCard class; contains an implementation for the ability method
+    * **TheCursedOne** - extends MinionCard class; contains an implementation for the ability method
+    * **TheRipper** - extends MinionCard class; contains an implementation for the ability method
+    * **Disciple** - extends MinionCard class; contains an implementation for the ability method
+* **entities/**
+    * **Game** - a class which models a game of GwentStone; it contains the game-board, the active player and the starting player; a game has rounds, each with 2 turns
+    * **Player** - a class which models a player of GwentStone; a player has multiple decks, a deck which is used in the current game, a hand of cards and a hero; it contains also a mana to spend
+* **interpreters/**
+    * **CardInterpreter** - a utility class that contains only a static method which takes an input of a card and creates a card of the correct type based on its name
+    * **Logger** - a class that is used to print specific information during a game; it contains a method which takes an input command and act based on that; if the command is not for debugging, a GameInterpreter is called
+    * **GameInterpreter** - a class that is used to translate game commands into actions of players; it has one big method which switch to a specific method based on the command after it extracts the active player
 
-<div align="center"><img src="https://tenor.com/view/witcher3-gif-9340436.gif" width="500px"></div>
+### General description of my implementation
+My game, player and cards classes are based on the input classes that were part of the skeleton.  
+Game class has a constructor which takes as argument a reference to a GameInput object. Player class contains a DecksInput field from which it extracts the deck of the current game.  
+This deckInUsage is an arraylist of Cards which is made by adding elements returned by the CardInterpreter which creates one Card object from a CardInput object.  
+In the Main class, in action method, an arraylist of games is made from the input, two player are created and a Logger is created as well. 
+For each game, the initial state is set: decks for players, heroes, initial mana and heroes health, round to be first and the starting player.  
+Next, for each command taken from the input the Logger interprets it. When a hero is killed the game ends, and it only accepts debug commands. This is the way for every game.  
+An object of class Logger contains an object of class GameInterpreter. A GameInterpreter can be instanced only in Logger, so it doesn't need to be public.  
+The CardInterpreter class is not meant to be instanced, so its constructor is private.  
+Class Card is an abstract one because there is no card that is simply a card, cards are classified, but they share some qualities and functionalities. 
+In the same context, classes EnvironmentCard and HeroCard are also abstract, but they extend class Card because they have more functionalities. 
+MinionCard is not abstract because some minions don't have any special functionalities, so they are simply minions and this class must have instances. But this class is extended, 
+and method useAbility (which does nothing in MinionCard) is overridden for Disciple, The Cursed One, Miraj and The Ripper minions.  
+To use the JSON format of output and the putPOJO method, there is an abstract method in class Card which must return a deep-copied object of a card, because putPOJO takes the values 
+at the end of execution for the reference passed as its parameter, and some objects change their fields as the execution continues.  
+This method have implementations in classes HeroCard, EnvironmentCard and MinionCard. For MinionCard a copy-constructor is used, but for the other two a copy abstract method is used because they (the classes) are abstract.
+In their inheritors, these copy methods are implemented by returning a new object of that type with the same values for fields.
 
-#### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/tema](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/tema)
-
-
-## Skel Structure
-
-* src/
-  * checker/ - checker files
-  * fileio/ - contains classes used to read data from the json files
-  * main/
-      * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-      * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-        to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests in JSON format
-* ref/ - contains all reference output for the tests in JSON format
-
-## Tests
-
-1. test01_game_start - 3p
-2. test02_place_card - 4p
-3. test03_place_card_invalid - 4p
-4. test04_use_env_card - 4p
-5. test05_use_env_card_invalid - 4p
-6. test06_attack_card - 4p
-7. test07_attack_card_invalid - 4p
-8. test08_use_card_ability - 4p
-9. test09_use_card_ability_invalid -4p
-10. test10_attack_hero - 4p
-11. test11_attack_hero_invalid - 4p
-12. test12_use_hero_ability_1 - 4p
-13. test13_use_hero_ability_2 - 4p
-14. test14_use_hero_ability_1_invalid - 4p
-15. test15_use_hero_ability_2_invalid - 4p
-16. test16_multiple_games_valid - 5p
-17. test17_multiple_games_invalid - 6p
-18. test18_big_game - 10p
-
-
-<div align="center"><img src="https://tenor.com/view/homework-time-gif-24854817.gif" width="500px"></div>
