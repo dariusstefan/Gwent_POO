@@ -11,21 +11,21 @@ import fileio.ActionsInput;
 import fileio.Coordinates;
 import java.util.ArrayList;
 
-public final class GameInterpreter {
+final class GameInterpreter {
     public static final int OPP_ROWS_SUM = 3;
     public static final int FULL_ROW_SZ = 5;
     private final ObjectMapper mapper;
 
     private final ArrayNode output;
 
-    public GameInterpreter(final ObjectMapper mapper, final ArrayNode output) {
+    GameInterpreter(final ObjectMapper mapper, final ArrayNode output) {
         this.mapper = mapper;
         this.output = output;
     }
 
     /**This method interprets a command that is not for debugging.
      * It is used to make game command, and it calls functions that implements thes commands.*/
-    public void makeCommand(final Game game, final Player playerOne,
+    void makeCommand(final Game game, final Player playerOne,
                             final Player playerTwo, final ActionsInput action) {
         Coordinates atkCoords = action.getCardAttacker();
         Coordinates tgtCoords = action.getCardAttacked();
