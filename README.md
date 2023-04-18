@@ -1,4 +1,3 @@
-#### Stefan Darius - 324CD
 # GwentStone
 
 ### Packages
