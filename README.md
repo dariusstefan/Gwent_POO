@@ -1,4 +1,5 @@
 # GwentStone
+The backend of a 2-player turn-based game inspired by Gwent and Hearthstone.  On a board with 4 lines, players place their minion cards and use their abilities to kill the opponent's hero card. Each player chooses their hero and a shuffled deck at the start of a game.
 
 ### Packages
 
